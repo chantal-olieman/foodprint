@@ -70,13 +70,20 @@ def foodprint():
     foodprint = calculate_foodprint(data)
     return json.dumps({"foodprint": foodprint})
 
+@app.route('/database', methods=['GET', 'POST'])
+def database():
+    database = dict()
+    for food, val in foodprint_storage.items():
+        database[food] = {"value": round(val,3), "alternatives": get_closest_alternatives(food, 1)}
+    json.dump(database, open("/home/chantal/PycharmProjects/foodprint/src/database.json", 'w'))
+    return json.dumps({"data": database})
 
 @app.route('/ingredients', methods=['GET', 'POST'])
 def ingredients():
     keys = [key for key, value in foodprint_storage.items()]
     return json.dumps({"ingredients":keys})
 
-
+X
 if __name__ == '__main__':
     foodprint_storage = json.load(open(f"{os.getcwd()}/src/GWP.txt"))
     food_classes = json.load(open(f"{os.getcwd()}/src/ingredient_classes.txt"))
